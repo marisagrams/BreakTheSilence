@@ -55,6 +55,9 @@ if num == 0
     Silence_Period = Timelength; 
 elseif num == 1
     Silence_Period = Timelength; 
+    % This is pseudo-fix to our problem
+    % In the future, we will want to user to decide if the 1 tone plays at the start or the end
+    % and then the program will work accordingly
 elseif num > 0
         Silence_Period = Timelength/(num-1); 
 end 
