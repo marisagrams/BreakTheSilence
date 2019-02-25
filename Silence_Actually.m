@@ -53,11 +53,9 @@ Tone = NormSin.*X;
 % that is the length of time chosen (Timelength)
 if num == 0 
     Silence_Period = Timelength; 
-end
-
-% else carry on with normal procedure of creating silence periods to be
-% placed inbetween each tone(num)
-if num > 0 
+elseif num == 1
+    Silence_Period = Timelength; 
+elseif num > 0
         Silence_Period = Timelength/(num-1); 
 end 
 
@@ -74,13 +72,14 @@ sound(startsound,Fs);
 for i = num
     if num == 0
          SoundVector = Silence; 
+         sound(SoundVector,Fs);
+    elseif num == 1
+         disp('Please enter a value that is either "0" or greater than "1".')
     elseif num > 0 
         SoundVector = Tone; % just a portion of the old code moved into this 
         for i = 1:num-1
             SoundVector = [SoundVector, Silence, Tone]; 
+            sound(SoundVector,Fs);
         end
     end
-end
-   sound(SoundVector,Fs);
-
 end
