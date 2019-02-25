@@ -70,24 +70,6 @@ startsound = Silence(1:200000);
 %An initial silent tone is played to avoid bottlenecks in audio cues
 %for the first tone played.
 sound(startsound,Fs);
-
-% if no tones (num) were chosen > the sound vector is just the duration (or timelength)
-% chosen by user > the duration of Silence
-%if num == 0
-%    for i = 1:num+1 % i might have to re look at this <<<<<<<<<<
-%        SoundVector = Silence; 
-        % if you plot SoundVector (or ans that apeares in the workspace) at the end of running this code, it
-        % will give you a visulaization of the period of silence that occured 
-%    end
-%end
-
-% however if a number of tones (num) were chosen then SoundVector becomes
-% the component parts determined by the inputs: num, Freq, and Timelength 
-%if num > 0
-%    SoundVector = Tone; % just a portion of the old code moved into this 
-%    for i = 1:num-1
-%        SoundVector = [SoundVector, Silence, Tone]; 
-%    end
     
 for i = num
     if num == 0
