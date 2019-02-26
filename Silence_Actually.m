@@ -10,21 +10,21 @@ function SoundVector = BreakTheSilence (num, Freq, Timelength)
 %           SoundVector - A structure containing vectors of the sound
 %                          waveform for each tone.
 
-%Default Timelength is set to 60s. Default carrier frequency set to 2000Hz. 
-%Default number of tones is set to 2.
+%Default Timelength is set to 10s. Default carrier frequency set to 2000Hz. 
+%Default number of tones is set to 0.
 
     switch nargin
         % switch block tests each case until one is true
         % nargin determines the number of arguments inputted
         case 2
-            Timelength = 60;
+            Timelength = 10;
         case 1
-            Timelength = 60;
+            Timelength = 10;
             Freq = 2000;
         case 0 
-            Timelength = 10; % 60
-            Freq = 2000; % 2000
-            num = 0; % 3 
+            Timelength = 10;
+            Freq = 2000;
+            num = 0;  
     end
 
 
@@ -49,15 +49,22 @@ Tone = NormSin.*X;
 
 %Define the amount of silence periods based off the num(number of tones)
 
-% no tones for chosen timelenght duration > num = 0, create a silence period 
+% no tones for chosen timelength duration > num = 0, create a silence period 
 % that is the length of time chosen (Timelength)
 if num == 0 
     Silence_Period = Timelength; 
 elseif num == 1
-    Silence_Period = Timelength; 
-    % This is pseudo-fix to our problem
-    % In the future, we will want to user to decide if the 1 tone plays at the start or the end
-    % and then the program will work accordingly
+    Silence_Period = Timelength;
+    response = input('Press 1 if you would like the tone at the beginning\nPress 2 if you would like the tone at the end','s');
+    Decision = 0;
+        if strcmp(response, '1')==1
+            Decision = 1;
+        elseif strcmp(response, '2')==1
+            Decision = 2;
+        elseif strcmp(response, '1')==0 || strcmp(response, '2')==0
+            disp('Please choose 1 or 2')
+            %It ends here after though, I need it to loop again
+        end
 elseif num > 0
         Silence_Period = Timelength/(num-1); 
 end 
@@ -77,7 +84,13 @@ for i = num
          SoundVector = Silence; 
          sound(SoundVector,Fs);
     elseif num == 1
-         disp('Please enter a value that is either "0" or greater than "1".')
+         SoundVector = Tone;
+            if Decision == 1 
+                sound(SoundVector,Fs);
+            elseif Decision == 2
+                SoundVector = [Silence, SoundVector]; 
+                sound(SoundVector,Fs);
+            end
     elseif num > 0 
         SoundVector = Tone; % just a portion of the old code moved into this 
         for i = 1:num-1
