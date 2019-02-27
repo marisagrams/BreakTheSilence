@@ -62,9 +62,9 @@ elseif num == 1
             Decision = 1;
         elseif strcmp(response, '2')==1
             Decision = 2;
-        elseif strcmp(response, '1')==0 || strcmp(response, '2')==0
-            disp('Please choose 1 or 2')
-            %It ends here after though, I need it to loop again
+        elseif strcmp(response, '1')==0 || strcmp(response, '2')==0  
+            warning('You did not choose "1" or "2". Assigning a value of 2.');
+            Decision = 2;
         end
 elseif num > 0
         Silence_Period = Timelength/(num-1); 
