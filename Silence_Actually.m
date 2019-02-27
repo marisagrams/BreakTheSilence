@@ -55,7 +55,7 @@ if num == 0
     Silence_Period = Timelength; 
 elseif num == 1
     Silence_Period = Timelength;
-    response = input('Press 1 if you would like the tone at the beginning\nPress 2 if you would like the tone at the end','s');
+    response = input('Press 1 if you would like the tone at the beginning or\nPress 2 if you would like the tone at the end: ','s');
     Decision = 0;
         if strcmp(response, '1')==1
             Decision = 1;
@@ -79,23 +79,36 @@ startsound = Silence(1:200000);
 %for the first tone played.
 sound(startsound,Fs);
     
+% creating a tone sequence that meets the set timelength inputed by user  
+TotalTime = 0:Ts:Timelength;        
+TotalTime = TotalTime(1:end-1);  % this variable is to compare against the ans gotten at the end of running the function. ans should be this long 
+
+ToneLength_B = 2*length(Tone);   % tone length at beginning: this is for the SoundVector portion. every first iteration of the making of sound vector, this value will be subtracted from silence
+ToneLength_E = length(Tone);     % tone length at end: every iteration after first itteration of SoundVector
+
+Silence_B = zeros(1, round((Fs*Silence_Period)-ToneLength_B));   % silence portion for first iteration of SoundVector
+Silence_E = zeros(1, round((Fs*Silence_Period)-ToneLength_E));   % silence portion for every iteration after first iteration of SoundVector 
+
+% creating sound vector 
 for i = num
     if num == 0
          SoundVector = Silence; 
-         sound(SoundVector,Fs);
     elseif num == 1
          SoundVector = Tone;
             if Decision == 1 
-                sound(SoundVector,Fs);
+                SoundVector = [SoundVector, Silence_E];
             elseif Decision == 2
-                SoundVector = [Silence, SoundVector]; 
-                sound(SoundVector,Fs);
+                SoundVector = [Silence_E, SoundVector]; 
             end
     elseif num > 0 
-        SoundVector = Tone; % just a portion of the old code moved into this 
+        SoundVector = Tone; 
         for i = 1:num-1
-            SoundVector = [SoundVector, Silence, Tone]; 
-            sound(SoundVector,Fs);
+            if i == 1                                                  
+                SoundVector = [SoundVector, Silence_B, Tone];        
+            else                                                      
+                SoundVector = [SoundVector,Silence_E, Tone];           
+            end                                                        
         end
     end
+    sound(SoundVector,Fs);
 end
