@@ -94,7 +94,6 @@ for i = num
          SoundVector = Tone;
             if Decision == 1 
                 SoundVector = [SoundVector, Silence_E];
-                sound(SoundVector,Fs);
             elseif Decision == 2
                 SoundVector = [Silence_E, SoundVector]; 
             end
