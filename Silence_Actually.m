@@ -97,13 +97,11 @@ for i = num
          SoundVector = Tone;
             if Decision == 1 
                 SoundVector = [SoundVector, Silence_E];
-                sound(SoundVector,Fs);
             elseif Decision == 2
                 SoundVector = [Silence_E, SoundVector]; 
             end
     elseif num > 0 
-        SoundVector = Tone; % just a portion of the old code moved into this 
-       % Silence = Silence - Tone; 
+        SoundVector = Tone; 
         for i = 1:num-1
             if i == 1                                                  
                 SoundVector = [SoundVector, Silence_B, Tone];        
