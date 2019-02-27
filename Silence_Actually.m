@@ -5,26 +5,25 @@ function SoundVector = BreakTheSilence (num, Freq, Timelength)
 %           Freq - sets the carrier frequency of the tone (Hz)
 %           Timelength - the total length that includes both
 %                        the Tone(s) and Silence_Period
-%   *** num can only exceed timelenght by 1 
 % Outputs: 
 %           SoundVector - A structure containing vectors of the sound
 %                          waveform for each tone.
 
-%Default Timelength is set to 10s. Default carrier frequency set to 2000Hz. 
-%Default number of tones is set to 0.
+%Default Timelength is set to 5s. Default carrier frequency set to 2000Hz. 
+%Default number of tones is set to 2.
 
     switch nargin
         % switch block tests each case until one is true
         % nargin determines the number of arguments inputted
         case 2
-            Timelength = 10;
+            Timelength = 5;
         case 1
-            Timelength = 10;
+            Timelength = 5;
             Freq = 2000;
         case 0 
             Timelength = 5;
             Freq = 2000;
-            num = 1;  
+            num = 2;  
     end
 
 
@@ -35,9 +34,13 @@ Fs = 200000;
 Ts = 1/Fs;
 T = 0:Ts:.2;
 
+% Create tonal waveform and remove the last datapoint (equal to zero) so
+% that the next tone that comes next does not have a repeat of zero.
 NormSin = sin(2*pi*Freq*T);                
 NormSin = NormSin(1:end-1);
 
+% Create a trapezoidal waveform to ramp up and ramp down the tone to
+% Create a gradual increase and decrease of the tone.
 Ramp = round(numel(NormSin)/20);
 RampUp = linspace(0,1,Ramp);
 Hold = ones(1,numel(NormSin)-2*Ramp);
@@ -47,13 +50,11 @@ X = [RampUp, Hold, RampDown];
 %Apply the trapezoidal waveform to the normal tone.
 Tone = NormSin.*X;
 
-
-%Define the amount of silence periods based off the num(number of tones)
-
-% no tones for chosen timelength duration > num = 0, create a silence period 
-% that is the length of time chosen (Timelength)
+% This portion of code will control what happens based on the num inputted by
+% the user: 0, 1, or >1
 if num == 0 
-    Silence_Period = Timelength; 
+    Silence_Period = Timelength; % no tones for chosen timelength duration: num = 0, create a silence period 
+                                 % that is the length of time chosen (Timelength)
 elseif num == 1
     Silence_Period = Timelength;
     response = input('Press 1 if you would like the tone at the beginning or\nPress 2 if you would like the tone at the end: ','s');
@@ -67,12 +68,11 @@ elseif num == 1
             Decision = 2;
         end
 elseif num > 0
-        Silence_Period = Timelength/(num-1); 
+        Silence_Period = Timelength/(num-1); % Define the amount of silence periods based off the num(number of tones)
 end 
 
 %Create a startsound to avoid any bottleneck in playing the tones when
-%sound begins.
-%Initialize vector for the beginning silence
+%sound begins. Initialize vector for the beginning silence
 Silence = zeros(1, round(Fs*Silence_Period)); 
 
 startsound = Silence(1:200000);
@@ -91,7 +91,7 @@ ToneLength_E = length(Tone);      % tone length at end: every iteration after fi
 Silence_B = zeros(1, round((Fs*Silence_Period)-ToneLength_B));    % silence portion for first iteration of SoundVector
 Silence_E = zeros(1, round((Fs*Silence_Period)-ToneLength_E));    % silence portion for every iteration after first iteration of SoundVector 
 
-% creating the sound vector 
+% creating the sound vector based off user input
 for i = num
     if num == 0
          SoundVector = Silence; 
@@ -112,5 +112,5 @@ for i = num
             end                                                        
         end
     end
-    sound(SoundVector,Fs);
+    sound(SoundVector,Fs);  %Plays the sound vector assigned by above
 end
